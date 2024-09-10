@@ -3,7 +3,7 @@ import Home from "./pages/Home";
 import Tables from "./pages/Tables";
 import Profile from "./pages/Profile";
 import Main from "./components/layout/Main";
-import "antd/dist/antd.css";
+// import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 

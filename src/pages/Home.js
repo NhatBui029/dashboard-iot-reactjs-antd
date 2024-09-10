@@ -1,46 +1,77 @@
 import {
   Card,
   Col,
+  Flex,
   Row,
-  Typography
+  Typography,
+  Switch
 } from "antd";
 
 import LineChart from "../components/chart/LineChart";
-import { FaTemperatureLow} from "react-icons/fa";
+import { FaTemperatureLow, FaFan, FaRegLightbulb,FaLightbulb, FaRegSnowflake } from "react-icons/fa";
 import { RiWaterPercentFill } from "react-icons/ri";
 import { MdLightMode } from "react-icons/md";
+import '../assets/styles/home.css'
+import { useState } from "react";
+import { getTemperatureColor } from "../utils/getColor";
+
 function Home() {
   const { Title } = Typography;
+  const [fanStatus, setFanStatus] = useState(false);
+  const [lightStatus, setLightStatus] = useState(false);
+  const [airConditionerStatus, setAirConditionerStatus] = useState(false);
 
-  const count = [
+  const weatherDatas = [
     {
-      today: "Nhiệt độ",
-      title: "30",
-      persent: "*C",
-      icon: <FaTemperatureLow size={18}/>,
-      bnb: "bnb2",
+      title: "Nhiệt độ",
+      value: "30",
+      unit: "*C",
+      icon: <FaTemperatureLow size={18} />,
+      bnb: "redtext",
     },
     {
-      today: "Độ ẩm",
-      title: "92",
-      persent: "%",
-      icon: <RiWaterPercentFill size={18}/>,
-      bnb: "bnb2",
+      title: "Độ ẩm",
+      value: "92",
+      unit: "%",
+      icon: <RiWaterPercentFill size={18} />,
+      bnb: "redtext",
     },
     {
-      today: "Ánh sáng",
-      title: "1200",
-      persent: "Lux",
+      title: "Ánh sáng",
+      value: "1200",
+      unit: "Lux",
       icon: <MdLightMode size={18} />,
       bnb: "redtext",
     }
   ];
 
+  const actionDatas = [
+    {
+      title: "Quạt",
+      status: fanStatus,
+      icon: <FaFan size={50} className={fanStatus ? "spin-icon": ""}/>,
+      onChange: (e) => setFanStatus(e)
+    },
+    {
+      title: "Điều hòa",
+      status: airConditionerStatus,
+      icon: airConditionerStatus ? <FaRegSnowflake size={50} color="rgb(140, 208, 242)"/>: <FaRegSnowflake size={50}/>,
+      onChange: (e) => setAirConditionerStatus(e)
+    },
+    {
+      title: "Đèn",
+      status: lightStatus,
+      icon: lightStatus ? <FaLightbulb size={50} color="yellow"/> :<FaRegLightbulb size={50} />,
+      onChange: (e)=> setLightStatus(e)
+    }
+  ]
+
+
   return (
     <>
       <div className="layout-content">
         <Row className="rowgap-vbox" gutter={[24, 0]}>
-          {count.map((c, index) => (
+          {weatherDatas.map((c, index) => (
             <Col
               key={index}
               xs={24}
@@ -50,13 +81,15 @@ function Home() {
               xl={8}
               className="mb-24"
             >
-              <Card bordered={false} className="criclebox ">
+              <Card bordered={false} className="criclebox" style={{
+                background: getTemperatureColor(19),
+              }}>
                 <div className="number">
                   <Row align="middle" gutter={[24, 0]}>
                     <Col xs={18}>
-                      <span>{c.today}</span>
+                      <span style={{ color: "#000" }}>{c.title}</span>
                       <Title level={3}>
-                        {c.title} <small className={c.bnb}>{c.persent}</small>
+                        {c.value} <small className={c.bnb}>{c.unit}</small>
                       </Title>
                     </Col>
                     <Col xs={6}>
@@ -69,19 +102,30 @@ function Home() {
           ))}
         </Row>
 
-        <Row  gutter={[24, 0]}>
+        <Row gutter={[24, 0]}>
           <Col xs={18}>
             <Card bordered={false} className="criclebox h-full" style={{ width: '100%' }}>
               <LineChart style={{ width: '100%' }} />
             </Card>
           </Col>
-          <Col xs={6}>
-            <Card>
-              hi
-            </Card>
-            <Card>
-              hi
-            </Card>
+          <Col xs={6} >
+            <Flex vertical justify="space-between" className="h-full">
+              {actionDatas.map((action, index) => (
+                <Card key={index}>
+                  <Row gutter={[24, 0]}>
+                    <Col xs={15}>
+                      <Title level={5} style={{ margin: 0 }}>
+                        {action.title}
+                      </Title>
+                      <Switch checkedChildren="ON" unCheckedChildren="OFF" onChange={action.onChange}/>
+                    </Col>
+                    <Col xs={9} >
+                      {action.icon}
+                    </Col>
+                  </Row>
+                </Card>
+              ))}
+            </Flex>
           </Col>
         </Row>
       </div>

@@ -1,13 +1,18 @@
 const lineChart = {
   series: [
     {
-      name: "Mobile apps",
+      name: "Nhiệt độ",
       data: [350, 40, 300, 220, 500, 250, 400, 230, 500],
       offsetY: 0,
     },
     {
-      name: "Websites",
+      name: "Độ ẩm",
       data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+      offsetY: 0,
+    },
+    {
+      name: "Ánh sáng",
+      data: [300, 20, 408, 540, 90, 200, 540, 130, 1260],
       offsetY: 0,
     },
   ],
@@ -31,23 +36,26 @@ const lineChart = {
     },
     stroke: {
       curve: "smooth",
+      width: [2, 2, 2]
     },
 
-    yaxis: {
-      labels: {
-        style: {
-          fontSize: "14px",
-          fontWeight: 600,
-          colors: ["#8c8c8c"],
-        },
+    yaxis: [{
+      title: {
+        text: 'Nhiệt độ & Độ ẩm',
       },
-    },
+    
+    }, {
+      opposite: true,
+      title: {
+        text: 'Ánh sáng'
+      }
+    }],
 
     xaxis: {
       labels: {
         style: {
           fontSize: "14px",
-          fontWeight: 600,
+          fontWeight: 500,
           colors: [
             "#8c8c8c",
             "#8c8c8c",
@@ -74,13 +82,13 @@ const lineChart = {
       ],
     },
 
-    tooltip: {
-      y: {
-        formatter: function (val) {
-          return val;
-        },
-      },
-    },
+    // tooltip: {
+    //   y: {
+    //     formatter: function (val) {
+    //       return val;
+    //     },
+    //   },
+    // },
   },
 };
 

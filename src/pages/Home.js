@@ -4,7 +4,8 @@ import {
   Flex,
   Row,
   Typography,
-  Switch
+  Switch,
+  Progress
 } from "antd";
 
 import LineChart from "../components/chart/LineChart";
@@ -13,7 +14,6 @@ import { RiWaterPercentFill } from "react-icons/ri";
 import { MdLightMode } from "react-icons/md";
 import '../assets/styles/home.css'
 import { useState } from "react";
-import { getTemperatureColor } from "../utils/getColor";
 
 function Home() {
   const { Title } = Typography;
@@ -27,6 +27,7 @@ function Home() {
       value: "30",
       unit: "*C",
       icon: <FaTemperatureLow size={18} />,
+      progressColor: '#008FFB',
       bnb: "redtext",
     },
     {
@@ -34,6 +35,7 @@ function Home() {
       value: "92",
       unit: "%",
       icon: <RiWaterPercentFill size={18} />,
+      progressColor: '#00E396',
       bnb: "redtext",
     },
     {
@@ -41,6 +43,7 @@ function Home() {
       value: "1200",
       unit: "Lux",
       icon: <MdLightMode size={18} />,
+      progressColor: '#FEB019',
       bnb: "redtext",
     }
   ];
@@ -81,19 +84,20 @@ function Home() {
               xl={8}
               className="mb-24"
             >
-              <Card bordered={false} className="criclebox" style={{
-                background: getTemperatureColor(19),
-              }}>
+              <Card bordered={false} className="criclebox" >
                 <div className="number">
                   <Row align="middle" gutter={[24, 0]}>
-                    <Col xs={18}>
+                    <Col xs={6}>
                       <span style={{ color: "#000" }}>{c.title}</span>
                       <Title level={3}>
-                        {c.value} <small className={c.bnb}>{c.unit}</small>
+                        {c.value} <small style={{color: c.progressColor}}>{c.unit}</small>
                       </Title>
                     </Col>
-                    <Col xs={6}>
-                      <div className="icon-box">{c.icon}</div>
+                    <Col xs={14}>
+                      <Progress percent={60} showInfo={false} strokeColor={c.progressColor}/>
+                    </Col>
+                    <Col xs={4}>
+                      <div className="icon-box" style={{backgroundColor: c.progressColor}}>{c.icon}</div>
                     </Col>
                   </Row>
                 </div>

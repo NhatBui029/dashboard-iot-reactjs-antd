@@ -26,7 +26,7 @@ function Main({ children }) {
         className={`sider-primary ant-layout-sider-primary `}
         style={{ background: "transparent" }}
       >
-        <Sidenav color={"#1890ff"} />
+        <Sidenav />
       </Sider>
       <Layout>
         <AntHeader>

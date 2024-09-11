@@ -2,93 +2,93 @@ const lineChart = {
   series: [
     {
       name: "Nhiệt độ",
-      data: [350, 40, 300, 220, 500, 250, 400, 230, 500],
+      data: [30, 40, 35, 50, 49, 60, 70, 91],
       offsetY: 0,
     },
     {
       name: "Độ ẩm",
-      data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+      data: [10, 20, 15, 25, 28, 45, 55, 61],
       offsetY: 0,
     },
     {
       name: "Ánh sáng",
-      data: [300, 20, 408, 540, 90, 200, 540, 130, 1260],
+      data: [900, 80, 950, 1024, 100, 195, 420, 130],
       offsetY: 0,
     },
   ],
 
   options: {
     chart: {
-      width: "100%",
+      type: 'line',
       height: 350,
-      type: "area",
       toolbar: {
-        show: false,
+        show: false
       },
     },
-
     legend: {
       show: false,
     },
-
     dataLabels: {
       enabled: false,
     },
+
     stroke: {
       curve: "smooth",
-      width: [2, 2, 2]
+      width: [2,2,2],
     },
 
-    yaxis: [{
-      title: {
-        text: 'Nhiệt độ & Độ ẩm',
+    yaxis: [
+      {
+        title: {
+          text: "Nhiệt độ & Độ ẩm",
+        },
+        seriesName: "Nhiệt độ",
+        min: 0, 
+        max: 100, 
+        tickAmount: 5,
       },
-    
-    }, {
-      opposite: true,
-      title: {
-        text: 'Ánh sáng'
-      }
-    }],
+      {
+        show: false,
+        seriesName: "Độ ẩm",
+        min: 0, 
+        max: 100, 
+        tickAmount: 5,
+      },
+      {
+        opposite: true,
+        title: {
+          text: "Ánh sáng",
+        },
+        seriesName: "Ánh sáng",
+        min: 0, 
+        max: 1024, 
+        tickAmount: 8,
+      },
+    ],
 
     xaxis: {
-      labels: {
-        style: {
-          fontSize: "14px",
-          fontWeight: 500,
-          colors: [
-            "#8c8c8c",
-            "#8c8c8c",
-            "#8c8c8c",
-            "#8c8c8c",
-            "#8c8c8c",
-            "#8c8c8c",
-            "#8c8c8c",
-            "#8c8c8c",
-            "#8c8c8c",
-          ],
-        },
-      },
-      categories: [
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-      ],
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
     },
 
-    // tooltip: {
-    //   y: {
-    //     formatter: function (val) {
-    //       return val;
-    //     },
-    //   },
-    // },
+    tooltip: {
+      y: [
+        {
+          formatter: function (val) {
+            return val + "°C"; 
+          },
+        },
+        {
+          formatter: function (val) {
+            return val + "%"; 
+          },
+        },
+        {
+          formatter: function (val) {
+            return val + " lux"; 
+          },
+        },
+      ],
+    },
   },
 };
 

@@ -1,0 +1,10 @@
+.tabled .ant-input{
+    height: 30px;
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+.tabled .ant-btn{
+    height: 30px;
+    font-weight: 500;
+}

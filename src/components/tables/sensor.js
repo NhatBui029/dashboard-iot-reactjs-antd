@@ -8,7 +8,7 @@ import {
     DatePicker
 } from "antd";
 import { FaSearch } from "react-icons/fa";
-import { DataSensor } from "../../constant";
+import { DataSensorFields } from "../../constant";
 
 
 const { RangePicker } = DatePicker;
@@ -16,41 +16,41 @@ const { RangePicker } = DatePicker;
 const columns = [
     {
         title: "STT",
-        dataIndex: DataSensor.STT,
-        key: DataSensor.STT,
+        dataIndex: DataSensorFields.STT,
+        key: DataSensorFields.STT,
         width: "10%",
     },
     {
         title: "ID",
-        dataIndex: DataSensor.ID,
-        key: DataSensor.ID,
+        dataIndex: DataSensorFields.ID,
+        key: DataSensorFields.ID,
         sorter: {
-            compare: (a, b) => a[DataSensor.ID]-b[DataSensor.ID],
+            compare: (a, b) => a[DataSensorFields.ID]-b[DataSensorFields.ID],
             multiple: 3,
         },
     },
 
     {
         title: "Nhiệt độ",
-        key: DataSensor.TEMPERATURE,
-        dataIndex: DataSensor.TEMPERATURE,
+        key: DataSensorFields.TEMPERATURE,
+        dataIndex: DataSensorFields.TEMPERATURE,
     },
     {
         title: "Độ ẩm",
-        key: DataSensor.HUMIDITY,
-        dataIndex: DataSensor.HUMIDITY,
+        key: DataSensorFields.HUMIDITY,
+        dataIndex: DataSensorFields.HUMIDITY,
     },
     {
         title: "Ánh sáng",
-        key: DataSensor.LIGHT,
-        dataIndex: DataSensor.LIGHT,
+        key: DataSensorFields.LIGHT,
+        dataIndex: DataSensorFields.LIGHT,
     },
     {
         title: "Thời gian",
-        key: DataSensor.TIME,
-        dataIndex: DataSensor.TIME,
+        key: DataSensorFields.TIME,
+        dataIndex: DataSensorFields.TIME,
         sorter: {
-            compare: (a, b) => a[DataSensor.TIME].toString().localeCompare(b[DataSensor.TIME].toString()),
+            compare: (a, b) => a[DataSensorFields.TIME].toString().localeCompare(b[DataSensorFields.TIME].toString()),
             multiple: 3,
         },
     },
@@ -59,26 +59,25 @@ const columns = [
 const data = [
     {
         key: "1",
-        [DataSensor.STT]: 1,
-        [DataSensor.ID]: 112,
-        [DataSensor.TEMPERATURE]: 34,
-        [DataSensor.HUMIDITY]: 90,
-        [DataSensor.LIGHT]: 1012,
-        [DataSensor.TIME]: "2024:09:12-14:50:34"
+        [DataSensorFields.STT]: 1,
+        [DataSensorFields.ID]: 112,
+        [DataSensorFields.TEMPERATURE]: 34,
+        [DataSensorFields.HUMIDITY]: 90,
+        [DataSensorFields.LIGHT]: 1012,
+        [DataSensorFields.TIME]: "2024:09:12-14:50:34"
     },
     {
         key: "2",
-        [DataSensor.STT]: 2,
-        [DataSensor.ID]: 12,
-        [DataSensor.TEMPERATURE]: 24,
-        [DataSensor.HUMIDITY]: 99,
-        [DataSensor.LIGHT]: 567,
-        [DataSensor.TIME]: "2024:09:12-15:50:34"
+        [DataSensorFields.STT]: 2,
+        [DataSensorFields.ID]: 12,
+        [DataSensorFields.TEMPERATURE]: 24,
+        [DataSensorFields.HUMIDITY]: 99,
+        [DataSensorFields.LIGHT]: 567,
+        [DataSensorFields.TIME]: "2024:09:12-15:50:34"
     },
 ];
 
 function SensorTable() {
-    const onChange = (e) => console.log(`radio checked:${e.target.value}`);
 
     return (
         <div className="tabled">
@@ -90,15 +89,15 @@ function SensorTable() {
                 <Flex justify="space-around" align="center" style={{ margin: "20px 0" }}>
                     <Input placeholder="" size="small" prefix={<FaSearch />} style={{ width: 320, height: 30 }} />
                     <Select
-                        defaultValue={DataSensor.ALL}
+                        defaultValue={DataSensorFields.ALL}
                         style={{ width: 320 }}
                         // onChange={handleChange}
                         options={[
-                            { value: DataSensor.ALL, label: 'Tất cả' },
-                            { value: DataSensor.ID, label: 'ID' },
-                            { value: DataSensor.TEMPERATURE, label: 'Nhiệt độ' },
-                            { value: DataSensor.HUMIDITY, label: 'Độ ẩm' },
-                            { value: DataSensor.LIGHT, label: 'Ánh sáng' }
+                            { value: DataSensorFields.ALL, label: 'Tất cả' },
+                            { value: DataSensorFields.ID, label: 'ID' },
+                            { value: DataSensorFields.TEMPERATURE, label: 'Nhiệt độ' },
+                            { value: DataSensorFields.HUMIDITY, label: 'Độ ẩm' },
+                            { value: DataSensorFields.LIGHT, label: 'Ánh sáng' }
                         ]}
                     />
                     <RangePicker showTime />

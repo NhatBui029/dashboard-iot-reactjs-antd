@@ -9,7 +9,7 @@ import {
 } from "antd";
 
 import LineChart from "../components/chart/LineChart";
-import { FaTemperatureLow, FaFan, FaRegLightbulb,FaLightbulb, FaRegSnowflake } from "react-icons/fa";
+import { FaTemperatureLow, FaFan, FaLightbulb, FaRegSnowflake } from "react-icons/fa";
 import { RiWaterPercentFill } from "react-icons/ri";
 import { MdLightMode } from "react-icons/md";
 import '../assets/styles/home.css'
@@ -52,20 +52,20 @@ function Home() {
     {
       title: "Quạt",
       status: fanStatus,
-      icon: <FaFan size={50} className={fanStatus ? "spin-icon": ""}/>,
+      icon: <FaFan size={50} className={fanStatus ? "spin-icon" : ""} />,
       onChange: (e) => setFanStatus(e)
     },
     {
       title: "Điều hòa",
       status: airConditionerStatus,
-      icon: airConditionerStatus ? <FaRegSnowflake size={50} color="rgb(140, 208, 242)"/>: <FaRegSnowflake size={50}/>,
+      icon: <FaRegSnowflake size={50} color={airConditionerStatus ? "rgb(140, 208, 242)" : ""} />,
       onChange: (e) => setAirConditionerStatus(e)
     },
     {
       title: "Đèn",
       status: lightStatus,
-      icon: lightStatus ? <FaLightbulb size={50} color="yellow"/> :<FaRegLightbulb size={50} />,
-      onChange: (e)=> setLightStatus(e)
+      icon: <FaLightbulb size={50} color={lightStatus ? "yellow": ""} />,
+      onChange: (e) => setLightStatus(e)
     }
   ]
 
@@ -90,14 +90,14 @@ function Home() {
                     <Col xs={6}>
                       <span style={{ color: "#000" }}>{c.title}</span>
                       <Title level={3}>
-                        {c.value} <small style={{color: c.progressColor}}>{c.unit}</small>
+                        {c.value} <small style={{ color: c.progressColor }}>{c.unit}</small>
                       </Title>
                     </Col>
                     <Col xs={14}>
-                      <Progress percent={60} showInfo={false} strokeColor={c.progressColor}/>
+                      <Progress percent={60} showInfo={false} strokeColor={c.progressColor} />
                     </Col>
                     <Col xs={4}>
-                      <div className="icon-box" style={{backgroundColor: c.progressColor}}>{c.icon}</div>
+                      <div className="icon-box" style={{ backgroundColor: c.progressColor }}>{c.icon}</div>
                     </Col>
                   </Row>
                 </div>
@@ -121,7 +121,7 @@ function Home() {
                       <Title level={5} style={{ margin: 0 }}>
                         {action.title}
                       </Title>
-                      <Switch checkedChildren="ON" unCheckedChildren="OFF" onChange={action.onChange}/>
+                      <Switch checkedChildren="ON" unCheckedChildren="OFF" onChange={action.onChange} />
                     </Col>
                     <Col xs={9} >
                       {action.icon}

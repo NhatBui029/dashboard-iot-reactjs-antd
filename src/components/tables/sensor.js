@@ -87,10 +87,10 @@ function SensorTable() {
                 title="Sensor Data Table"
             >
                 <Flex justify="space-around" align="center" style={{ margin: "20px 0" }}>
-                    <Input placeholder="" size="small" prefix={<FaSearch />} style={{ width: 320, height: 30 }} />
+                    <Input placeholder="" size="small" prefix={<FaSearch />} style={{ width: '20%', height: 30 }} />
                     <Select
                         defaultValue={DataSensorFields.ALL}
-                        style={{ width: 320 }}
+                        style={{ width: '20%' }}
                         // onChange={handleChange}
                         options={[
                             { value: DataSensorFields.ALL, label: 'Tất cả' },
@@ -101,7 +101,7 @@ function SensorTable() {
                         ]}
                     />
                     <RangePicker showTime />
-                    <Button type="primary" icon={<FaSearch />} style={{ width: 200 }}>
+                    <Button type="primary" icon={<FaSearch />} style={{ width: '15%' }}>
                         Search
                     </Button>
                 </Flex>

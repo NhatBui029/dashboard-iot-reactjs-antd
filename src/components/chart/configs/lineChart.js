@@ -1,23 +1,23 @@
-const lineChart = {
-  series: [
-    {
-      name: "Nhiệt độ",
-      data: [30, 40, 35, 50, 49, 60, 70, 91],
-      offsetY: 0,
-    },
-    {
-      name: "Độ ẩm",
-      data: [10, 20, 15, 25, 28, 45, 55, 61],
-      offsetY: 0,
-    },
-    {
-      name: "Ánh sáng",
-      data: [900, 80, 950, 1024, 100, 195, 420, 130],
-      offsetY: 0,
-    },
-  ],
+export const series = (data) => [
+  {
+    name: "Nhiệt độ",
+    data: data.temperature,
+    offsetY: 0,
+  },
+  {
+    name: "Độ ẩm",
+    data: data.humidity,
+    offsetY: 0,
+  },
+  {
+    name: "Ánh sáng",
+    data: data.light,
+    offsetY: 0,
+  },
+];
 
-  options: {
+export const options = (data) => {
+  return {
     chart: {
       type: 'line',
       height: 350,
@@ -34,7 +34,7 @@ const lineChart = {
 
     stroke: {
       curve: "smooth",
-      width: [2,2,2],
+      width: [2, 2, 2],
     },
 
     yaxis: [
@@ -43,15 +43,15 @@ const lineChart = {
           text: "Nhiệt độ & Độ ẩm",
         },
         seriesName: "Nhiệt độ",
-        min: 0, 
-        max: 100, 
+        min: 0,
+        max: 100,
         tickAmount: 5,
       },
       {
         show: false,
         seriesName: "Độ ẩm",
-        min: 0, 
-        max: 100, 
+        min: 0,
+        max: 100,
         tickAmount: 5,
       },
       {
@@ -60,36 +60,37 @@ const lineChart = {
           text: "Ánh sáng",
         },
         seriesName: "Ánh sáng",
-        min: 0, 
-        max: 1024, 
+        min: 0,
+        max: 1024,
         tickAmount: 8,
       },
     ],
 
     xaxis: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+      categories: data.time.map(t => {
+        return new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' }).format(t)
+      })
     },
 
     tooltip: {
       y: [
         {
           formatter: function (val) {
-            return val + "°C"; 
+            return val + "°C";
           },
         },
         {
           formatter: function (val) {
-            return val + "%"; 
+            return val + "%";
           },
         },
         {
           formatter: function (val) {
-            return val + " lux"; 
+            return val + " lux";
           },
         },
       ],
     },
-  },
-};
-
-export default lineChart;
+    animations: { enabled: true, easing: 'linear', dynamicAnimation: { speed: 1000 } }
+  }
+}

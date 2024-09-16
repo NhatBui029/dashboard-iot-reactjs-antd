@@ -1,17 +1,17 @@
 export const series = (data) => [
   {
     name: "Nhiệt độ",
-    data: data.temperature,
+    data: data.temperatures,
     offsetY: 0,
   },
   {
     name: "Độ ẩm",
-    data: data.humidity,
+    data: data.humiditys,
     offsetY: 0,
   },
   {
     name: "Ánh sáng",
-    data: data.light,
+    data: data.lights,
     offsetY: 0,
   },
 ];
@@ -67,8 +67,9 @@ export const options = (data) => {
     ],
 
     xaxis: {
-      categories: data.time.map(t => {
-        return new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' }).format(t)
+      categories: data.times.map(t => {
+        const date = new Date(t);
+        return new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' }).format(date)
       })
     },
 

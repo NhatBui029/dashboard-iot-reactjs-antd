@@ -5,7 +5,8 @@ import {
   Row,
   Typography,
   Switch,
-  Progress
+  Progress,
+  message
 } from "antd";
 
 import LineChart from "../components/chart/LineChart";
@@ -14,17 +15,21 @@ import { RiWaterPercentFill } from "react-icons/ri";
 import { MdLightMode } from "react-icons/md";
 import '../assets/styles/home.css'
 import { useState } from "react";
+import { useDataSensorStore, useSocket } from "../stores";
+import axios from "axios";
 
 function Home() {
   const { Title } = Typography;
   const [fanStatus, setFanStatus] = useState(false);
   const [lightStatus, setLightStatus] = useState(false);
   const [airConditionerStatus, setAirConditionerStatus] = useState(false);
+  const { temperature, humidity, light } = useDataSensorStore();
+  const { socket } = useSocket();
 
   const weatherDatas = [
     {
       title: "Nhiệt độ",
-      value: "30",
+      value: temperature,
       unit: "*C",
       icon: <FaTemperatureLow size={18} />,
       progressColor: '#008FFB',
@@ -32,7 +37,7 @@ function Home() {
     },
     {
       title: "Độ ẩm",
-      value: "92",
+      value: humidity,
       unit: "%",
       icon: <RiWaterPercentFill size={18} />,
       progressColor: '#00E396',
@@ -40,7 +45,7 @@ function Home() {
     },
     {
       title: "Ánh sáng",
-      value: "1200",
+      value: light,
       unit: "Lux",
       icon: <MdLightMode size={18} />,
       progressColor: '#FEB019',
@@ -53,19 +58,37 @@ function Home() {
       title: "Quạt",
       status: fanStatus,
       icon: <FaFan size={50} className={fanStatus ? "spin-icon" : ""} />,
-      onChange: (e) => setFanStatus(e)
+      onChange: (e) => {
+        setFanStatus(e);
+        socket.send(JSON.stringify({
+          topic: 'action/fan',
+          message: e ? 'on' : 'off'
+        }))
+      }
     },
     {
       title: "Điều hòa",
       status: airConditionerStatus,
       icon: <FaRegSnowflake size={50} color={airConditionerStatus ? "rgb(140, 208, 242)" : ""} />,
-      onChange: (e) => setAirConditionerStatus(e)
+      onChange: (e) => {
+        setAirConditionerStatus(e);
+        socket.send(JSON.stringify({
+          topic: 'action/air_conditioner',
+          message: e ? 'on' : 'off'
+        }))
+      }
     },
     {
       title: "Đèn",
       status: lightStatus,
-      icon: <FaLightbulb size={50} color={lightStatus ? "yellow": ""} />,
-      onChange: (e) => setLightStatus(e)
+      icon: <FaLightbulb size={50} color={lightStatus ? "yellow" : ""} />,
+      onChange: (e) => {
+        setLightStatus(e);
+        socket.send(JSON.stringify({
+          topic: 'action/led',
+          message: e ? 'on' : 'off'
+        }))
+      }
     }
   ]
 

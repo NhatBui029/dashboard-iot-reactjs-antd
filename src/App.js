@@ -6,8 +6,20 @@ import Main from "./components/layout/Main";
 // import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
+import { useWebSocketStore } from "./stores";
+import {useEffect} from 'react'
 
 function App() {
+  const { connect, closeConnection } = useWebSocketStore();
+
+  useEffect(() => {
+    connect('ws://localhost:8080');
+
+    return () => {
+      closeConnection();
+    };
+  }, [connect, closeConnection]);
+
   return (
     <div className="App">
       <Switch>

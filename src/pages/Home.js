@@ -6,7 +6,6 @@ import {
   Typography,
   Switch,
   Progress,
-  message
 } from "antd";
 
 import LineChart from "../components/chart/LineChart";
@@ -14,17 +13,14 @@ import { FaTemperatureLow, FaFan, FaLightbulb, FaRegSnowflake } from "react-icon
 import { RiWaterPercentFill } from "react-icons/ri";
 import { MdLightMode } from "react-icons/md";
 import '../assets/styles/home.css'
-import { useState } from "react";
-import { useDataSensorStore, useSocket } from "../stores";
-import axios from "axios";
+import { useActionDeviceStore, useDataSensorStore, useWebSocketStore } from "../stores";
 
 function Home() {
   const { Title } = Typography;
-  const [fanStatus, setFanStatus] = useState(false);
-  const [lightStatus, setLightStatus] = useState(false);
-  const [airConditionerStatus, setAirConditionerStatus] = useState(false);
   const { temperature, humidity, light } = useDataSensorStore();
-  const { socket } = useSocket();
+  const { isOnLed, isOnAirConditioner, isOnFan, updateActionDevice } = useActionDeviceStore();
+
+  const {sendMessage } = useWebSocketStore();
 
   const weatherDatas = [
     {
@@ -56,38 +52,38 @@ function Home() {
   const actionDatas = [
     {
       title: "Quạt",
-      status: fanStatus,
-      icon: <FaFan size={50} className={fanStatus ? "spin-icon" : ""} />,
+      status: isOnFan,
+      icon: <FaFan size={50} className={isOnFan ? "spin-icon" : ""} />,
       onChange: (e) => {
-        setFanStatus(e);
-        socket.send(JSON.stringify({
+        updateActionDevice({isOnFan: e});
+        sendMessage({
           topic: 'action/fan',
           message: e ? 'on' : 'off'
-        }))
+        })
       }
     },
     {
       title: "Điều hòa",
-      status: airConditionerStatus,
-      icon: <FaRegSnowflake size={50} color={airConditionerStatus ? "rgb(140, 208, 242)" : ""} />,
+      status: isOnAirConditioner,
+      icon: <FaRegSnowflake size={50} color={isOnAirConditioner ? "rgb(140, 208, 242)" : ""} />,
       onChange: (e) => {
-        setAirConditionerStatus(e);
-        socket.send(JSON.stringify({
+        updateActionDevice({isOnAirConditioner: e});
+        sendMessage({
           topic: 'action/air_conditioner',
           message: e ? 'on' : 'off'
-        }))
+        })
       }
     },
     {
       title: "Đèn",
-      status: lightStatus,
-      icon: <FaLightbulb size={50} color={lightStatus ? "yellow" : ""} />,
+      status: isOnLed,
+      icon: <FaLightbulb size={50} color={isOnLed ? "yellow" : ""} />,
       onChange: (e) => {
-        setLightStatus(e);
-        socket.send(JSON.stringify({
+        updateActionDevice({isOnLed: e});
+        sendMessage({
           topic: 'action/led',
           message: e ? 'on' : 'off'
-        }))
+        })
       }
     }
   ]
@@ -144,7 +140,7 @@ function Home() {
                       <Title level={5} style={{ margin: 0 }}>
                         {action.title}
                       </Title>
-                      <Switch checkedChildren="ON" unCheckedChildren="OFF" onChange={action.onChange} />
+                      <Switch checkedChildren="ON" unCheckedChildren="OFF" onChange={action.onChange} value={action.status} />
                     </Col>
                     <Col xs={9} >
                       {action.icon}

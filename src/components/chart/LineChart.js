@@ -2,38 +2,12 @@ import ReactApexChart from "react-apexcharts";
 import { Typography } from "antd";
 import { FaMinus } from "react-icons/fa";
 import { options, series } from "./configs/lineChart";
-import { useEffect, useState } from "react";
-import { useDataSensorStore, useSocket } from "../../stores";
+import {  useWebSocketStore } from "../../stores";
 
 function LineChart() {
   const { Title } = Typography;
-  const [data, setData] = useState({
-    temperatures: [],
-    humiditys: [],
-    lights: [],
-    times: []
-  });
-  const { updateDataSensor } = useDataSensorStore();
-  const {socket, connect} = useSocket();
 
-  useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080');
-    if(!socket) connect(ws)
-    ws.onmessage = (event) => {
-      const {topic, data} = JSON.parse(event.data)
-      if (topic === 'sensorData') {
-        updateDataSensor(data);
-        setData((prevData) => ({
-          temperatures: [...prevData.temperatures, data.temperature].slice(-10),
-          humiditys: [...prevData.humiditys, data.humidity].slice(-10),
-          lights: [...prevData.lights, data.light].slice(-10),
-          times: [...prevData.times, data.createdAt].slice(-10),
-        }))
-      }
-    }
-    return () => ws.close();
-  }, [])
-
+  const { message } = useWebSocketStore();
 
   return (
     <>
@@ -52,8 +26,8 @@ function LineChart() {
 
       <ReactApexChart
         className="full-width"
-        options={options(data)}
-        series={series(data)}
+        options={options(message)}
+        series={series(message)}
         type="area"
         height={450}
         width={"100%"}

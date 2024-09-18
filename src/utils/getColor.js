@@ -5,3 +5,14 @@ export const getTemperatureColor = (temperature) => {
     if (temperature <= 40) return 'rgb(254, 111, 7)';
     return 'rgb(248, 5, 0)';
 };
+
+export const createQueryString = (filter, sortAndPage) => {
+    let queryString = '?';
+    Object.keys(filter).forEach((query) => {
+        if (filter[query]) queryString += `${query}=${filter[query]}&`
+    })
+    Object.keys(sortAndPage).forEach((query) => {
+        if (sortAndPage[query]) queryString += `${query}=${sortAndPage[query]}`
+    })
+    return queryString.slice(0,-1);
+}

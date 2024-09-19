@@ -11,7 +11,8 @@ import { FaSearch } from "react-icons/fa";
 import { DataSensorFields } from "../../constant";
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axios-client";
-import { createQueryString } from "../../utils/getColor";
+import { createQueryString } from "../../ulti";
+import { mappingDataSensor } from "../../ulti";
 
 
 const { RangePicker } = DatePicker;
@@ -22,6 +23,10 @@ const columns = [
         dataIndex: 'stt',
         key: 'stt',
         width: "10%",
+        sorter: {
+            compare: (a, b) => a.id - b.id,
+            multiple: 3,
+        },
     },
     {
         title: "ID",
@@ -37,16 +42,28 @@ const columns = [
         title: "Nhiệt độ",
         key: 'temperature',
         dataIndex: 'temperature',
+        sorter: {
+            compare: (a, b) => a.id - b.id,
+            multiple: 3,
+        },
     },
     {
         title: "Độ ẩm",
         key: 'humidity',
         dataIndex: 'humidity',
+        sorter: {
+            compare: (a, b) => a.id - b.id,
+            multiple: 3,
+        },
     },
     {
         title: "Ánh sáng",
         key: 'light',
         dataIndex: 'light',
+        sorter: {
+            compare: (a, b) => a.id - b.id,
+            multiple: 3,
+        },
     },
     {
         title: "Thời gian",
@@ -59,26 +76,6 @@ const columns = [
     },
 ];
 
-// const data = [
-//     {
-//         key: "1",
-//         [DataSensorFields.STT]: 1,
-//         [DataSensorFields.ID]: 112,
-//         [DataSensorFields.TEMPERATURE]: 34,
-//         [DataSensorFields.HUMIDITY]: 90,
-//         [DataSensorFields.LIGHT]: 1012,
-//         [DataSensorFields.TIME]: "2024:09:12-14:50:34"
-//     },
-//     {
-//         key: "2",
-//         [DataSensorFields.STT]: 2,
-//         [DataSensorFields.ID]: 12,
-//         [DataSensorFields.TEMPERATURE]: 24,
-//         [DataSensorFields.HUMIDITY]: 99,
-//         [DataSensorFields.LIGHT]: 567,
-//         [DataSensorFields.TIME]: "2024:09:12-15:50:34"
-//     },
-// ];
 
 function SensorTable() {
     const [data, setData] = useState();
@@ -90,31 +87,30 @@ function SensorTable() {
         endTime: null,
     });
 
-    const [sortAndPage, setSortAndPage] = useState({
+    const [page, setPage] = useState({
         page: null,
         pageSize: null,
         sortBy: null,
         orderBy: null
     })
 
-    useEffect(() => {
-        const getSensorData = async () => {
-            const queryString = createQueryString(filter, sortAndPage);
-            const sensorDatas = await axiosClient.get(`/table/data${queryString}`)
-            console.log("🚀 ~ getSensorData ~ sensorDatas:", sensorDatas)
-            // setData(sensorDatas);
-        }
+    const getSensorData = async () => {
+        const queryString = createQueryString(filter, page);
+        const sensorDatas = await axiosClient.get(`/table/data${queryString}`);
+        setData(mappingDataSensor(sensorDatas.data));
+        setTotalCount(sensorDatas.meta.totalCount)
+    }
 
+    useEffect(() => {
         getSensorData();
-    }, [sortAndPage])
+    }, [page])
 
     const handleChangeFilter = (data) => {
         setFilter(prev => ({ ...prev, ...data }))
     }
 
     const handleClickSearch = () => {
-        const queryString = createQueryString(filter, sortAndPage);
-        console.log("🚀 ~ getSensorData ~ queryString:", queryString)
+        getSensorData();
     }
 
     return (
@@ -170,15 +166,15 @@ function SensorTable() {
                             position: ['topRight'],
                             current: filter.page,
                             pageSize: filter.pageSize,
-                            total: filter.totalCount
+                            total: totalCount
                         }}
                         className="ant-border-space"
-                    // onChange={(pagination, filters, sorter, extra) => {
-                    //     console.log("🚀 ~ SensorTable ~ pagination:", pagination)                  
-                    //     console.log("🚀 ~ SensorTable ~ filters:", filters)
-                    //     console.log("🚀 ~ SensorTable ~ sorter:", sorter)
-                    //     console.log("🚀 ~ SensorTable ~ extra:", extra)
-                    // }}
+                        onChange={(pagination, _filters, _sorter, _extra) => {
+                            setPage({
+                                page: pagination.current,
+                                pageSize: pagination.pageSize
+                            })
+                        }}
                     />
                 </div>
             </Card>

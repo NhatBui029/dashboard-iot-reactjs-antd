@@ -113,7 +113,7 @@ function Home() {
                       </Title>
                     </Col>
                     <Col xs={14}>
-                      <Progress percent={60} showInfo={false} strokeColor={c.progressColor} />
+                      <Progress percent={c.value} showInfo={false} strokeColor={c.progressColor} />
                     </Col>
                     <Col xs={4}>
                       <div className="icon-box" style={{ backgroundColor: c.progressColor }}>{c.icon}</div>

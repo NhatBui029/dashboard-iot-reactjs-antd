@@ -1,3 +1,5 @@
+import { convertUtcToVnTime } from "../../../ulti";
+
 export const series = (data) => [
   {
     name: "Nhiệt độ",
@@ -67,10 +69,7 @@ export const options = (data) => {
     ],
 
     xaxis: {
-      categories: data.times.map(t => {
-        const date = new Date(t);
-        return new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' }).format(date)
-      })
+      categories: data.times.map(t => convertUtcToVnTime(t))
     },
 
     tooltip: {

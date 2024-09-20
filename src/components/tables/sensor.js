@@ -24,7 +24,7 @@ const columns = [
         key: 'stt',
         width: "10%",
         sorter: {
-            compare: (a, b) => a.id - b.id,
+            compare: (a, b) => a.stt - b.stt,
             multiple: 3,
         },
     },
@@ -43,7 +43,7 @@ const columns = [
         key: 'temperature',
         dataIndex: 'temperature',
         sorter: {
-            compare: (a, b) => a.id - b.id,
+            compare: (a, b) => a.temperature - b.temperature,
             multiple: 3,
         },
     },
@@ -52,7 +52,7 @@ const columns = [
         key: 'humidity',
         dataIndex: 'humidity',
         sorter: {
-            compare: (a, b) => a.id - b.id,
+            compare: (a, b) => a.humidity - b.humidity,
             multiple: 3,
         },
     },
@@ -61,7 +61,7 @@ const columns = [
         key: 'light',
         dataIndex: 'light',
         sorter: {
-            compare: (a, b) => a.id - b.id,
+            compare: (a, b) => a.light - b.light,
             multiple: 3,
         },
     },

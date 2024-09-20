@@ -8,6 +8,9 @@ import {
 } from "antd";
 import { FaSearch } from "react-icons/fa";
 import { ActionHistoryFields, actionDevices, devices } from "../../constant";
+import { useEffect, useState } from "react";
+import { createQueryString, mappingActionHistory } from "../../ulti";
+import axiosClient from "../../api/axios-client";
 
 
 const { RangePicker } = DatePicker;
@@ -15,61 +18,89 @@ const { RangePicker } = DatePicker;
 const columns = [
     {
         title: "STT",
-        dataIndex: ActionHistoryFields.STT,
-        key: ActionHistoryFields.STT,
+        dataIndex: 'stt',
+        key: 'stt',
         width: "10%",
+        sorter: {
+            compare: (a, b) => a.stt - b.stt,
+            multiple: 3,
+        },
     },
     {
         title: "ID",
-        dataIndex: ActionHistoryFields.ID,
-        key: ActionHistoryFields.ID,
+        dataIndex: 'id',
+        key: 'id',
         sorter: {
-            compare: (a, b) => a[ActionHistoryFields.ID]-b[ActionHistoryFields.ID],
+            compare: (a, b) => a.id - b.id,
             multiple: 3,
         },
     },
 
     {
         title: "Thiết bị",
-        key: ActionHistoryFields.DEVICE_NAME,
-        dataIndex: ActionHistoryFields.DEVICE_NAME,
+        key: 'device',
+        dataIndex: 'device',
+        sorter: {
+            compare: (a, b) => a.device.toString().localeCompare(b.device.toString()),
+            multiple: 3,
+        },
     },
     {
         title: "Hành động",
-        key: ActionHistoryFields.ACTION,
-        dataIndex: ActionHistoryFields.ACTION,
+        key: 'action',
+        dataIndex: 'action',
+        sorter: {
+            compare: (a, b) => a.action.toString().localeCompare(b.action.toString()),
+            multiple: 3,
+        },
     },
     {
         title: "Thời gian",
-        key: ActionHistoryFields.TIME,
-        dataIndex: ActionHistoryFields.TIME,
+        key: 'time',
+        dataIndex: 'time',
         sorter: {
-            compare: (a, b) => a[ActionHistoryFields.TIME].toString().localeCompare(b[ActionHistoryFields.TIME].toString()),
+            compare: (a, b) => a.time.toString().localeCompare(b.time.toString()),
             multiple: 3,
         },
     },
 ];
 
-const data = [
-    {
-        key: "1",
-        [ActionHistoryFields.STT]: 1,
-        [ActionHistoryFields.ID]: 112,
-        [ActionHistoryFields.DEVICE_NAME]: devices.AIR_CONDITIONER,
-        [ActionHistoryFields.ACTION]: actionDevices.ON,
-        [ActionHistoryFields.TIME]: "2024:09:12-14:50:34"
-    },
-    {
-        key: "2",
-        [ActionHistoryFields.STT]: 2,
-        [ActionHistoryFields.ID]: 12,
-        [ActionHistoryFields.DEVICE_NAME]: devices.FAN,
-        [ActionHistoryFields.ACTION]: actionDevices.OFF,
-        [ActionHistoryFields.TIME]: "2024:09:12-15:50:34"
-    },
-];
 
 function ActionTable() {
+    const [data, setData] = useState();
+    const [totalCount, setTotalCount] = useState();
+    const [filter, setFilter] = useState({
+        content: null,
+        searchBy: null,
+        startTime: null,
+        endTime: null,
+    });
+
+    const [page, setPage] = useState({
+        page: null,
+        pageSize: null,
+        sortBy: null,
+        orderBy: null
+    })
+
+    const getActionHistory = async () => {
+        const queryString = createQueryString(filter, page);
+        const sensorDatas = await axiosClient.get(`/table/action${queryString}`);
+        setData(mappingActionHistory(sensorDatas.data));
+        setTotalCount(sensorDatas.meta.totalCount)
+    }
+
+    useEffect(() => {
+        getActionHistory();
+    }, [page])
+
+    const handleChangeFilter = (data) => {
+        setFilter(prev => ({ ...prev, ...data }))
+    }
+
+    const handleClickSearch = () => {
+        getActionHistory();
+    }
 
     return (
         <div className="tabled">
@@ -79,11 +110,17 @@ function ActionTable() {
                 title="Sensor Data Table"
             >
                 <Flex justify="space-around" align="center" style={{ margin: "20px 0" }}>
-                    <RangePicker showTime />
+                    <RangePicker    
+                        showTime 
+                        onChange={(_time, timeString) => handleChangeFilter({
+                            startTime: timeString[0],
+                            endTime: timeString[1]
+                        })}
+                    />
                     <Select
                         defaultValue={ActionHistoryFields.ALL}
                         style={{ width: 320 }}
-                        // onChange={handleChange}
+                        onChange={(e) => handleChangeFilter({ searchBy: e })}
                         options={[
                             { value: ActionHistoryFields.ALL, label: 'Tất cả' },
                             { value: 'FAN', label: devices.FAN },
@@ -91,7 +128,7 @@ function ActionTable() {
                             { value: 'AIR_CONDITIONER', label: devices.AIR_CONDITIONER },
                         ]}
                     />
-                    <Button type="primary" icon={<FaSearch />} style={{ width: 200 }}>
+                    <Button type="primary" icon={<FaSearch />} style={{ width: 200 }} onClick={handleClickSearch}>
                         Search
                     </Button>
                 </Flex>
@@ -101,12 +138,17 @@ function ActionTable() {
                         dataSource={data}
                         pagination={{
                             position: ['topRight'],
-                            current: 1,
-                            pageSize: 10,
-                            total: 100
+                            current: filter.page,
+                            pageSize: filter.pageSize,
+                            total: totalCount
                         }}
                         className="ant-border-space"
-                        onChange={(e)=>console.log('hi: ', e)}
+                        onChange={(pagination, _filters, _sorter, _extra) => {
+                            setPage({
+                                page: pagination.current,
+                                pageSize: pagination.pageSize
+                            })
+                        }}
                     />
                 </div>
             </Card>

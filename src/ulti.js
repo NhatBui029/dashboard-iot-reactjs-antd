@@ -30,6 +30,18 @@ export const mappingDataSensor = (datas) => {
     })
 }
 
+export const mappingActionHistory = (datas) =>{
+    return datas.map((data, index)=>{
+        return {
+            stt: index+1,
+            id: data.id,
+            device: data.device,
+            action: data.action,
+            time: convertUtcToVnTime(data.createdAt)
+        }
+    })
+}
+
 export const convertUtcToVnTime = (time) => {
     const date = new Date(time);
     return new Intl.DateTimeFormat('vi-VN', { 

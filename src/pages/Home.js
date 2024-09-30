@@ -6,7 +6,9 @@ import {
   Typography,
   Switch,
   Progress,
+  Spin
 } from "antd";
+import { useEffect, } from "react";
 
 import LineChart from "../components/chart/LineChart";
 import { FaTemperatureLow, FaFan, FaLightbulb, FaRegSnowflake } from "react-icons/fa";
@@ -19,8 +21,13 @@ function Home() {
   const { Title } = Typography;
   const { temperature, humidity, light } = useDataSensorStore();
   const { isOnLed, isOnAirConditioner, isOnFan, updateActionDevice } = useActionDeviceStore();
+  const [loadingLed, setLoadingLed] = useState(false);
 
-  const {sendMessage } = useWebSocketStore();
+  const { sendMessage } = useWebSocketStore();
+
+  useEffect(()=>{
+    setLoadingLed(prev=> !prev)
+  }, [isOnLed, isOnAirConditioner, isOnFan])
 
   const weatherDatas = [
     {
@@ -55,7 +62,7 @@ function Home() {
       status: isOnFan,
       icon: <FaFan size={50} className={isOnFan ? "spin-icon" : ""} />,
       onChange: (e) => {
-        updateActionDevice({isOnFan: e});
+        updateActionDevice({ isOnFan: e });
         sendMessage({
           topic: 'action/fan',
           message: e ? 'on' : 'off'
@@ -67,7 +74,7 @@ function Home() {
       status: isOnAirConditioner,
       icon: <FaRegSnowflake size={50} color={isOnAirConditioner ? "rgb(140, 208, 242)" : ""} />,
       onChange: (e) => {
-        updateActionDevice({isOnAirConditioner: e});
+        updateActionDevice({ isOnAirConditioner: e });
         sendMessage({
           topic: 'action/air_conditioner',
           message: e ? 'on' : 'off'
@@ -78,8 +85,10 @@ function Home() {
       title: "Đèn",
       status: isOnLed,
       icon: <FaLightbulb size={50} color={isOnLed ? "yellow" : ""} />,
+      isLoading: loadingLed,
       onChange: (e) => {
-        updateActionDevice({isOnLed: e});
+        // updateActionDevice({isOnLed: e});
+        setLoadingLed(prev => !prev);
         sendMessage({
           topic: 'action/led',
           message: e ? 'on' : 'off'
@@ -141,6 +150,7 @@ function Home() {
                         {action.title}
                       </Title>
                       <Switch checkedChildren="ON" unCheckedChildren="OFF" onChange={action.onChange} value={action.status} />
+                      <Spin spinning={action.isLoading} />
                     </Col>
                     <Col xs={9} >
                       {action.icon}

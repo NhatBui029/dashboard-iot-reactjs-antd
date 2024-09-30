@@ -29,6 +29,7 @@ export const useWebSocketStore = create((set, get) => ({
   connect: (url) => {
     const ws = new WebSocket(url);
     const updateDataSensor = useDataSensorStore.getState().updateDataSensor; 
+    const updateActionDevice = useActionDeviceStore.getState().updateActionDevice; 
     
     ws.onopen = () => {
       console.log('WebSocket is open now.');
@@ -51,6 +52,10 @@ export const useWebSocketStore = create((set, get) => ({
             message: newMessage
           }
         })
+      }
+
+      if(topic == 'ledok'){
+        updateActionDevice({isOnLed: data == 'on'});
       }
     };
 

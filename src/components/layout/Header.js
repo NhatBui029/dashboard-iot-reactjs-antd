@@ -5,21 +5,24 @@ import {
   Breadcrumb,
   Badge,
   Button,
+  Typography,
 } from "antd";
 
 import { NavLink } from "react-router-dom";
 import { IoMdSettings } from "react-icons/io";
 import { FaBell } from "react-icons/fa";
+import { useCount } from "../../stores";
 
 function Header({
   name,
   subName
 }) {
   useEffect(() => window.scrollTo(0, 0));
+  const { count, updateCount } = useCount()
   return (
     <>
       <Row gutter={[24, 0]}>
-        <Col span={24} md={6}>
+        <Col span={8} md={6}>
           <Breadcrumb>
             <Breadcrumb.Item>
               <NavLink to="/">Pages</NavLink>
@@ -37,12 +40,15 @@ function Header({
             </span>
           </div>
         </Col>
-        <Col span={24} md={18} className="header-control">
+        <Col span={8} md={6}>
+          Số lần cảm biến lớn hơn 800: {count}
+        </Col>
+        <Col span={8} md={18} className="header-control">
           <Badge size="small" count={4}>
-            <FaBell/>
+            <FaBell />
           </Badge>
           <Button type="link" >
-            <IoMdSettings/>
+            <IoMdSettings />
           </Button>
         </Col>
       </Row>

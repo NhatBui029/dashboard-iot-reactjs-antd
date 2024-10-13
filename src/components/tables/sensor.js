@@ -66,6 +66,15 @@ const columns = [
         },
     },
     {
+        title: "Gas",
+        key: 'Gas',
+        dataIndex: 'gas',
+        sorter: {
+            compare: (a, b) => a.gas - b.gas,
+            multiple: 3,
+        },
+    },
+    {
         title: "Thời gian",
         key: 'time',
         dataIndex: 'time',
@@ -139,7 +148,9 @@ function SensorTable() {
                             { value: DataSensorFields.ID, label: 'ID' },
                             { value: DataSensorFields.TEMPERATURE, label: 'Nhiệt độ' },
                             { value: DataSensorFields.HUMIDITY, label: 'Độ ẩm' },
-                            { value: DataSensorFields.LIGHT, label: 'Ánh sáng' }
+                            { value: DataSensorFields.LIGHT, label: 'Ánh sáng' },
+                            { value: DataSensorFields.GAS, label: 'Gas' },
+                            { value: DataSensorFields.TIME, label: 'Thời gian' }
                         ]}
                     />
                     <RangePicker

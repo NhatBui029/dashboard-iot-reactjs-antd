@@ -5,7 +5,8 @@ export const DataSensorFields = {
     LIGHT: 'LIGHT',
     ID: 'ID',
     STT: 'STT',
-    TIME: 'TIME'
+    TIME: 'TIME',
+    GAS: 'GAS',
 }
 
 export const ActionHistoryFields = {

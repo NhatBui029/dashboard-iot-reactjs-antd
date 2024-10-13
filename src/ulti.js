@@ -14,13 +14,13 @@ export const createQueryString = (filter, page) => {
     Object.keys(page).forEach((query) => {
         if (page[query]) queryString += `${query}=${page[query]}&`
     })
-    return queryString.slice(0,-1);
+    return queryString.slice(0, -1);
 }
 
 export const mappingDataSensor = (datas) => {
     return datas.map((data, index) => {
         return {
-            stt: index+1,
+            stt: index + 1,
             id: data.id,
             temperature: data.temperature,
             humidity: data.humidity,
@@ -30,10 +30,10 @@ export const mappingDataSensor = (datas) => {
     })
 }
 
-export const mappingActionHistory = (datas) =>{
-    return datas.map((data, index)=>{
+export const mappingActionHistory = (datas) => {
+    return datas.map((data, index) => {
         return {
-            stt: index+1,
+            stt: index + 1,
             id: data.id,
             device: data.device,
             action: data.action,
@@ -42,12 +42,27 @@ export const mappingActionHistory = (datas) =>{
     })
 }
 
-export const convertUtcToVnTime = (time) => {
+export const convertUtcToVnTimeChart = (time) => {
     const date = new Date(time);
-    return new Intl.DateTimeFormat('vi-VN', { 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit', 
-        timeZone: 'Asia/Ho_Chi_Minh' 
+    return new Intl.DateTimeFormat('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: 'Asia/Ho_Chi_Minh'
     }).format(date)
 }
+export const convertUtcToVnTime = (time) => {
+    const date = new Date(time);
+
+    // Chuyển đổi giờ UTC về múi giờ Việt Nam
+    const vnTime = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }));
+
+    const year = vnTime.getFullYear();
+    const month = String(vnTime.getMonth() + 1).padStart(2, '0'); // getMonth() trả về giá trị từ 0 đến 11
+    const day = String(vnTime.getDate()).padStart(2, '0');
+    const hours = String(vnTime.getHours()).padStart(2, '0');
+    const minutes = String(vnTime.getMinutes()).padStart(2, '0');
+    const seconds = String(vnTime.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};

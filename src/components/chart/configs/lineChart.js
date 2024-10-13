@@ -1,4 +1,4 @@
-import { convertUtcToVnTime } from "../../../ulti";
+import { convertUtcToVnTime, convertUtcToVnTimeChart } from "../../../ulti";
 
 export const series = (data) => [
   {
@@ -16,6 +16,11 @@ export const series = (data) => [
     data: data.lights,
     offsetY: 0,
   },
+  // {
+  //   name: "Gas",
+  //   data: data.gass,
+  //   offsetY: 0,
+  // },
 ];
 
 export const options = (data) => {
@@ -66,10 +71,17 @@ export const options = (data) => {
         max: 1024,
         tickAmount: 8,
       },
+      // {
+      //   show: false,
+      //   title: {
+      //     text: "Gas",
+      //   },
+      //   seriesName: "Gas",
+      // },
     ],
 
     xaxis: {
-      categories: data.times.map(t => convertUtcToVnTime(t))
+      categories: data.times.map(t => convertUtcToVnTimeChart(t))
     },
 
     tooltip: {

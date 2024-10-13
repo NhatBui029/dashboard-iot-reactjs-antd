@@ -8,26 +8,37 @@ import {
   Progress,
   Spin
 } from "antd";
-import { useEffect, } from "react";
+import { useEffect, useState, } from "react";
 
 import LineChart from "../components/chart/LineChart";
 import { FaTemperatureLow, FaFan, FaLightbulb, FaRegSnowflake } from "react-icons/fa";
 import { RiWaterPercentFill } from "react-icons/ri";
 import { MdLightMode } from "react-icons/md";
 import '../assets/styles/home.css'
-import { useActionDeviceStore, useDataSensorStore, useWebSocketStore } from "../stores";
+import { useActionDeviceLoadingStore, useActionDeviceStore, useDataSensorStore, useWebSocketStore } from "../stores";
+import axiosClient from "../api/axios-client";
 
 function Home() {
   const { Title } = Typography;
-  const { temperature, humidity, light } = useDataSensorStore();
-  const { isOnLed, isOnAirConditioner, isOnFan, updateActionDevice } = useActionDeviceStore();
-  const [loadingLed, setLoadingLed] = useState(false);
+  const { temperature, humidity, light, gas } = useDataSensorStore();
+  const { isOnLed, isOnAirConditioner, isOnFan, isOnLamp, updateActionDevice } = useActionDeviceStore();
+
+  const { updateDataSensorAray } = useWebSocketStore()
+  const { isLoadingLed,
+    isLoadingLamp,
+    isLoadingFan,
+    isLoadingAirConditioner, updateActionDeviceLoading } = useActionDeviceLoadingStore()
 
   const { sendMessage } = useWebSocketStore();
 
-  useEffect(()=>{
-    setLoadingLed(prev=> !prev)
-  }, [isOnLed, isOnAirConditioner, isOnFan])
+  useEffect(() => {
+    const get10dataLast = async () => {
+      const res = await axiosClient.get('/data/10-data-last');
+      updateDataSensorAray(res.data);
+    }
+
+    get10dataLast();
+  }, [])
 
   const weatherDatas = [
     {
@@ -53,6 +64,14 @@ function Home() {
       icon: <MdLightMode size={18} />,
       progressColor: '#FEB019',
       bnb: "redtext",
+    },
+    {
+      title: "Gas",
+      value: gas,
+      unit: "??",
+      icon: <MdLightMode size={18} />,
+      progressColor: '#FEB019',
+      bnb: "redtext",
     }
   ];
 
@@ -61,8 +80,11 @@ function Home() {
       title: "Quạt",
       status: isOnFan,
       icon: <FaFan size={50} className={isOnFan ? "spin-icon" : ""} />,
+      isLoading: isLoadingFan,
       onChange: (e) => {
-        updateActionDevice({ isOnFan: e });
+        updateActionDeviceLoading({
+          isLoadingFan: !isLoadingFan,
+        })
         sendMessage({
           topic: 'action/fan',
           message: e ? 'on' : 'off'
@@ -72,9 +94,12 @@ function Home() {
     {
       title: "Điều hòa",
       status: isOnAirConditioner,
+      isLoading: isLoadingAirConditioner,
       icon: <FaRegSnowflake size={50} color={isOnAirConditioner ? "rgb(140, 208, 242)" : ""} />,
       onChange: (e) => {
-        updateActionDevice({ isOnAirConditioner: e });
+        updateActionDeviceLoading({
+          isLoadingAirConditioner: !isLoadingAirConditioner,
+        })
         sendMessage({
           topic: 'action/air_conditioner',
           message: e ? 'on' : 'off'
@@ -85,12 +110,28 @@ function Home() {
       title: "Đèn",
       status: isOnLed,
       icon: <FaLightbulb size={50} color={isOnLed ? "yellow" : ""} />,
-      isLoading: loadingLed,
+      isLoading: isLoadingLed,
       onChange: (e) => {
-        // updateActionDevice({isOnLed: e});
-        setLoadingLed(prev => !prev);
+        updateActionDeviceLoading({
+          isLoadingLed: !isLoadingLed,
+        })
         sendMessage({
           topic: 'action/led',
+          message: e ? 'on' : 'off'
+        })
+      }
+    },
+    {
+      title: "Đèn 2",
+      status: isOnLamp,
+      icon: <FaLightbulb size={50} color={isOnLed ? "yellow" : ""} />,
+      isLoading: isLoadingLamp,
+      onChange: (e) => {
+        updateActionDeviceLoading({
+          isLoadingLamp: !isLoadingLamp,
+        })
+        sendMessage({
+          topic: 'action/lamp',
           message: e ? 'on' : 'off'
         })
       }

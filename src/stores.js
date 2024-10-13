@@ -4,14 +4,36 @@ export const useDataSensorStore = create((set) => ({
   temperature: 0,
   humidity: 0,
   light: 0,
+  gas: 0,
   updateDataSensor: (data) => set(() => (data)),
 }));
 
-export const useActionDeviceStore = create((set)=>({
+export const useCount = create((set) => ({
+  count: 0,
+  updateCount: () => set((stage) => {
+    return {
+      count: stage.count + 1,
+    };
+  }),
+}));
+
+export const useActionDeviceStore = create((set) => ({
   isOnLed: false,
   isOnAirConditioner: false,
   isOnFan: false,
-  updateActionDevice: (data) => set((stage)=> ({
+  isOnLamp: false,
+  updateActionDevice: (data) => set((stage) => ({
+    ...stage,
+    ...data
+  }))
+}))
+
+export const useActionDeviceLoadingStore = create((set) => ({
+  isLoadingLed: false,
+  isLoadingAirConditioner: false,
+  isLoadingFan: false,
+  isLoadingLamp: false,
+  updateActionDeviceLoading: (data) => set((stage) => ({
     ...stage,
     ...data
   }))
@@ -23,14 +45,31 @@ export const useWebSocketStore = create((set, get) => ({
     temperatures: [],
     humiditys: [],
     lights: [],
+    gass: [],
     times: []
   },  // Lưu trữ các tin nhắn nhận được
   isOpen: false,  // Trạng thái kết nối WebSocket
+  updateDataSensorAray: (data) => {
+    set((stage) => {
+      const newMessage = {
+        temperatures: data.map(d => d.temperature),
+        humiditys: data.map(d => d.humidity),
+        lights: data.map(d => d.light),
+        times: data.map(d => d.createdAt),
+        gass: data.map(d => d.gas)
+      };
+      return {
+        ...stage,
+        message: newMessage
+      }
+    })
+  },
   connect: (url) => {
     const ws = new WebSocket(url);
-    const updateDataSensor = useDataSensorStore.getState().updateDataSensor; 
-    const updateActionDevice = useActionDeviceStore.getState().updateActionDevice; 
-    
+    const updateDataSensor = useDataSensorStore.getState().updateDataSensor;
+    const updateActionDevice = useActionDeviceStore.getState().updateActionDevice;
+    const updateCount = useCount.getState().updateCount;
+
     ws.onopen = () => {
       console.log('WebSocket is open now.');
       set({ isOpen: true });
@@ -46,6 +85,7 @@ export const useWebSocketStore = create((set, get) => ({
             humiditys: [...stage.message.humiditys, data.humidity].slice(-10),
             lights: [...stage.message.lights, data.light].slice(-10),
             times: [...stage.message.times, data.createdAt].slice(-10),
+            gass: [...stage.message.gass, data.gas].slice(-10),
           };
           return {
             ...stage,
@@ -54,8 +94,38 @@ export const useWebSocketStore = create((set, get) => ({
         })
       }
 
-      if(topic == 'ledok'){
-        updateActionDevice({isOnLed: data == 'on'});
+      if (data.gas > 800) updateCount();
+
+      if (topic == 'ledOk') {
+        const { updateActionDeviceLoading, isLoadingLed } = useActionDeviceLoadingStore.getState();
+
+        updateActionDeviceLoading({
+          isLoadingLed: !isLoadingLed,
+        })
+        updateActionDevice({ isOnLed: data == 'on' });
+      }
+      if (topic == 'fanOk') {
+        const { updateActionDeviceLoading, isLoadingFan } = useActionDeviceLoadingStore.getState();
+        updateActionDeviceLoading({
+          isLoadingFan: !isLoadingFan,
+        })
+        updateActionDevice({ isOnFan: data == 'on' });
+      }
+      if (topic == 'airConditionerOk') {
+        const { updateActionDeviceLoading, isLoadingAirConditioner, } = useActionDeviceLoadingStore.getState();
+
+        updateActionDeviceLoading({
+          isLoadingAirConditioner: !isLoadingAirConditioner,
+        })
+        updateActionDevice({ isOnAirConditioner: data == 'on' });
+      }
+      if (topic == 'lampOk') {
+        const { updateActionDeviceLoading, isLoadingLamp } = useActionDeviceLoadingStore.getState();
+
+        updateActionDeviceLoading({
+          isLoadingLamp: !isLoadingLamp,
+        })
+        updateActionDevice({ isOnLamp: data == 'on' });
       }
     };
 

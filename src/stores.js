@@ -10,9 +10,9 @@ export const useDataSensorStore = create((set) => ({
 
 export const useCount = create((set) => ({
   count: 0,
-  updateCount: () => set((stage) => {
+  updateCount: (data) => set((stage) => {
     return {
-      count: stage.count + 1,
+      count: data || stage.count + 1,
     };
   }),
 }));

@@ -12,13 +12,23 @@ import { NavLink } from "react-router-dom";
 import { IoMdSettings } from "react-icons/io";
 import { FaBell } from "react-icons/fa";
 import { useCount } from "../../stores";
+import axiosClient from "../../api/axios-client";
 
 function Header({
   name,
   subName
 }) {
+  const { updateCount } = useCount();
   useEffect(() => window.scrollTo(0, 0));
-  const { count, updateCount } = useCount()
+  useEffect(() => {
+    const get10dataLast = async () => {
+      const res = await axiosClient.get('/data/count-data');
+      updateCount(res);
+    }
+
+    get10dataLast();
+  }, [])
+  const { count } = useCount()
   return (
     <>
       <Row gutter={[24, 0]}>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-
+let intervalId
 export const useDataSensorStore = create((set) => ({
   temperature: 0,
   humidity: 0,
@@ -92,6 +92,22 @@ export const useWebSocketStore = create((set, get) => ({
             message: newMessage
           }
         })
+      }
+
+      if (topic == 'warning') {
+        if (data == 'on') {
+          intervalId = setInterval(() => {
+            const { isOnLamp } = useActionDeviceStore.getState();
+            updateActionDevice({
+              isOnLamp: !isOnLamp
+            })
+          }, 200)
+        } else if (data == 'off') {
+          clearInterval(intervalId)
+          updateActionDevice({
+            isOnLamp: false
+          })
+        }
       }
 
       if (data.gas > 800) updateCount();

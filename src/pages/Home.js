@@ -33,11 +33,25 @@ function Home() {
 
   useEffect(() => {
     const get10dataLast = async () => {
-      const res = await axiosClient.get('/data/10-data-last');
-      updateDataSensorAray(res.data);
+      const dataLast = await axiosClient.get('/data/10-data-last');
+      updateDataSensorAray(dataLast.data);
     }
 
     get10dataLast();
+  }, [])
+
+  useEffect(() => {
+    const getActionLast = async () => {
+      const actionLast = await axiosClient.get('/data/action/last');
+      updateActionDevice({
+        isOnLed: actionLast.led == 'ON',
+        isOnAirConditioner: actionLast.airConditioner == 'ON',
+        isOnFan: actionLast.fan == 'ON',
+        isOnLamp: actionLast.lamp == 'ON',
+      });
+    }
+
+    getActionLast();
   }, [])
 
   const weatherDatas = [
@@ -59,7 +73,7 @@ function Home() {
     },
     {
       title: "Ánh sáng",
-      value: light,
+      value: Math.round(light / 1024 * 100),
       unit: "Lux",
       icon: <MdLightMode size={18} />,
       progressColor: '#FEB019',
@@ -67,7 +81,7 @@ function Home() {
     },
     {
       title: "Gas",
-      value: gas,
+      value: Math.round(gas / 10),
       unit: "??",
       icon: <MdLightMode size={18} />,
       progressColor: '#FEB019',
@@ -101,7 +115,7 @@ function Home() {
           isLoadingAirConditioner: !isLoadingAirConditioner,
         })
         sendMessage({
-          topic: 'action/air_conditioner',
+          topic: 'action/airConditioner',
           message: e ? 'on' : 'off'
         })
       }
@@ -124,7 +138,7 @@ function Home() {
     {
       title: "Đèn 2",
       status: isOnLamp,
-      icon: <FaLightbulb size={50} color={isOnLed ? "yellow" : ""} />,
+      icon: <FaLightbulb size={50} color={isOnLamp ? "yellow" : ""} />,
       isLoading: isLoadingLamp,
       onChange: (e) => {
         updateActionDeviceLoading({

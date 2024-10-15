@@ -4,7 +4,8 @@ import {
     Button,
     Flex,
     Select,
-    DatePicker
+    DatePicker,
+    Input
 } from "antd";
 import { FaSearch } from "react-icons/fa";
 import { ActionHistoryFields, actionDevices, devices } from "../../constant";
@@ -110,8 +111,17 @@ function ActionTable() {
                 title="Sensor Data Table"
             >
                 <Flex justify="space-around" align="center" style={{ margin: "20px 0" }}>
-                    <RangePicker    
-                        showTime 
+                    <Input
+                        placeholder=""
+                        size="small"
+                        prefix={<FaSearch />}
+                        style={{ width: '20%', height: 30 }}
+                        onChange={(e) => {
+                            handleChangeFilter({ content: e.target.value })
+                        }}
+                    />
+                    <RangePicker
+                        showTime
                         onChange={(_time, timeString) => handleChangeFilter({
                             startTime: timeString[0],
                             endTime: timeString[1]

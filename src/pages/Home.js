@@ -28,13 +28,19 @@ function Home() {
     isLoadingLamp,
     isLoadingFan,
     isLoadingAirConditioner, updateActionDeviceLoading } = useActionDeviceLoadingStore()
-
   const { sendMessage } = useWebSocketStore();
 
+  const { updateDataSensor } = useDataSensorStore()
   useEffect(() => {
     const get10dataLast = async () => {
       const dataLast = await axiosClient.get('/data/10-data-last');
       updateDataSensorAray(dataLast.data);
+      updateDataSensor({
+        temperature: dataLast.data[0].temperature,
+        humidity: dataLast.data[0].humidity,
+        light: dataLast.data[0].light,
+        gas: dataLast.data[0].gas,
+      });
     }
 
     get10dataLast();
@@ -73,7 +79,7 @@ function Home() {
     },
     {
       title: "Ánh sáng",
-      value: Math.round(light / 1024 * 100),
+      value: Math.round(light),
       unit: "Lux",
       icon: <MdLightMode size={18} />,
       progressColor: '#FEB019',
@@ -81,7 +87,7 @@ function Home() {
     },
     {
       title: "Gas",
-      value: Math.round(gas / 10),
+      value: Math.round(gas),
       unit: "??",
       icon: <MdLightMode size={18} />,
       progressColor: '#FEB019',
